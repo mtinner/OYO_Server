@@ -1,0 +1,23 @@
+{
+  "name": "udp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mtinner/OYO_Endpoint.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mtinner/OYO_Endpoint/issues"
+  },
+  "homepage": "https://github.com/mtinner/OYO_Endpoint#readme",
+  "dependencies": {
+    "dgram": "^1.0.1"
+  }
+}
