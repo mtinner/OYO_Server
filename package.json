@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/mtinner/OYO_Endpoint#readme",
   "dependencies": {
-    "dgram": "^1.0.1"
+    "dgram": "^1.0.1",
+    "http": "0.0.0",
+    "websocket": "^1.0.24"
   }
 }
