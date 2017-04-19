@@ -18,7 +18,11 @@
   },
   "homepage": "https://github.com/mtinner/OYO_Endpoint#readme",
   "dependencies": {
+    "body-parser": "^1.17.1",
     "dgram": "^1.0.1",
+    "express": "^4.15.2",
+    "gulp-connect": "^5.0.0",
+    "gulp-express": "^0.3.5",
     "http": "0.0.0",
     "websocket": "^1.0.24"
   }
