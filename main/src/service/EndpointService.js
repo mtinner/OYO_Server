@@ -14,6 +14,11 @@ class EndpointService {
         return this.endpoints;
     }
 
+    remove(ip) {
+        this.endpoints = this.endpoints.filter(endpoint => endpoint.ip !== ip);
+        return this.endpoints;
+    }
+
     getAll() {
         return this.endpoints;
     }

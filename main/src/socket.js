@@ -48,6 +48,7 @@ module.exports = (function () {
             });
             connection.on('close', function (reasonCode, description) {
                 console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+                endpointManager.remove(connection.socket.remoteAddress);
             });
         });
     }
