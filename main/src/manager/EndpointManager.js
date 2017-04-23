@@ -13,12 +13,21 @@ class EndpointManager {
         return this.endpointService.getAll();
     }
 
-    add(chipId, ip) {
-        return this.endpointService.add(chipId, ip);
+    add(obj) {
+        return this.endpointService.add(obj);
     }
 
-    remove(ip) {
-        return this.endpointService.remove(ip);
+    update(obj) {
+        return this.endpointService.update(obj);
+    }
+
+    addInput(obj) {
+        let endpoint = this.endpointService.get(obj.chipId);
+        let index = endpoint.inputPins.findIndex((pin) => pin === obj.pin);
+        if (!endpoint.activeIoIndex.includes(index)) {
+            endpoint.activeIoIndex.push(index);
+        }
+        return this.update(endpoint);
     }
 }
 
