@@ -26,7 +26,7 @@ module.exports = (function () {
         });
 
         function getChipId(websocket) {
-            return parseInt(websocket.upgradeReq.headers['x-chipid'])
+            return parseInt(websocket.upgradeReq.headers['chip-id'])
         }
     }
 })();
