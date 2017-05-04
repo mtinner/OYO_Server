@@ -1,12 +1,17 @@
 'use strict';
 
-let EndpointService = require('../service/EndpointService');
+let EndpointService = require('../service/EndpointService'),
+    Promise = require('promise');
 
 
 class EndpointManager {
 
     constructor() {
-        this.endpointService = EndpointService
+        this.endpointService = new EndpointService()
+    }
+
+    get(chipId) {
+        return this.endpointService.get({chipId: chipId})
     }
 
     getAll() {
@@ -14,21 +19,35 @@ class EndpointManager {
     }
 
     add(obj) {
-        return this.endpointService.add(obj);
+       return this.get(obj.chipId)
+            .then((doc) => {
+                if (doc) {
+                    //TODO update ip
+                    return Promise.resolve(doc);
+                }
+                else {
+                    return this.endpointService.add(obj);
+                }
+            });
     }
 
     update(obj) {
-        return this.endpointService.update(obj);
+        return this.endpointService.update({chipId: obj.chipId}, obj);
     }
 
     addInput(obj) {
-        let endpoint = this.endpointService.get(obj.chipId);
-        let index = endpoint.inputPins.findIndex((pin) => pin === obj.pin);
-        if (!endpoint.activeIoIndex.includes(index)) {
-            endpoint.activeIoIndex.push(index);
-        }
-        return this.update(endpoint);
+        return this.get(obj.chipId)
+            .then(endpoint => {
+                if (endpoint) {
+                    let index = endpoint.inputPins.findIndex((pin) => pin === obj.pin);
+                    if (!endpoint.activeIoIndex.includes(index)) {
+                        endpoint.activeIoIndex.push(index);
+                    }
+                    return this.update(endpoint);
+                }
+                return Promise.reject('no such endpoint');
+            });
     }
 }
 
-module.exports = new EndpointManager();
+module.exports = EndpointManager;

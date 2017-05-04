@@ -3,7 +3,10 @@ let WebSocket = require('ws');
 
 module.exports = (function () {
     let constants = require('./common/constants'),
-        endpointManager = require('./manager/EndpointManager');
+        EndpointManager = require('./manager/EndpointManager'),
+        eventBus = require('./service/EventBus'),
+        endpointManager = new EndpointManager();
+
     return {start: start};
     function start() {
 
@@ -16,7 +19,9 @@ module.exports = (function () {
             ws.on('message', function incoming(message) {
                 console.log('Received Message: ' + message);
                 let input = JSON.parse(message);
-                endpointManager.addInput(Object.assign({}, input, {chipId: getChipId(ws)}))
+                let inputChange = Object.assign({}, input, {chipId: getChipId(ws)});
+                endpointManager.addInput(inputChange);
+                eventBus.emit(constants.INPUT_CHANGE, inputChange);
             });
 
             ws.on('close', function () {
