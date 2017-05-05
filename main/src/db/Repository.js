@@ -19,11 +19,24 @@ class Repository {
     }
 
     get(document) {
-        return this.collection.findOne(document);
+        return this.collection.findOne(document)
+            .then(this.removeId);
     }
 
     getAll(document = {}) {
-        return this.collection.find(document).toArray();
+        return this.collection.find(document).toArray()
+            .then(this.removeId);
+    }
+
+    removeId(doc) {
+        let cleanedItem = null;
+        if (Array.isArray(doc)) {
+            doc.forEach(item => delete item._id)
+        }
+        else {
+            delete doc._id;
+        }
+        return Promise.resolve(doc);
     }
 }
 

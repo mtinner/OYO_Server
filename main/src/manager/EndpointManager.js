@@ -1,7 +1,6 @@
 'use strict';
 
-let EndpointService = require('../service/EndpointService'),
-    Promise = require('promise');
+let EndpointService = require('../service/EndpointService');
 
 
 class EndpointManager {
@@ -22,8 +21,7 @@ class EndpointManager {
        return this.get(obj.chipId)
             .then((doc) => {
                 if (doc) {
-                    //TODO update ip
-                    return Promise.resolve(doc);
+                    return this.update({chipId: obj.chipId, ip: obj.ip})
                 }
                 else {
                     return this.endpointService.add(obj);
