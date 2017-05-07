@@ -18,7 +18,7 @@ class EndpointManager {
     }
 
     add(obj) {
-       return this.get(obj.chipId)
+        return this.get(obj.chipId)
             .then((doc) => {
                 if (doc) {
                     return this.update({chipId: obj.chipId, ip: obj.ip})

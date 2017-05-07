@@ -4,8 +4,9 @@ class Repository {
 
     constructor(documentName) {
         // TODO open close wrapper --> not in constructor
-        let url = 'mongodb://localhost:27017/myproject';
+        let url = 'mongodb://localhost:27017/oyo';
         MongoClient.connect(url, (err, db) => {
+            console.log('Error: ', err);
             this.collection = db.collection(documentName);
         });
     }
@@ -33,7 +34,7 @@ class Repository {
         if (Array.isArray(doc)) {
             doc.forEach(item => delete item._id)
         }
-        else {
+        else if (doc && doc._id) {
             delete doc._id;
         }
         return Promise.resolve(doc);
