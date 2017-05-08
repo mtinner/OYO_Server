@@ -1,0 +1,33 @@
+[
+  {
+    "chipId": 1300883,
+    "ip": "::ffff:192.168.178.41",
+    "ios": [
+      {
+        "inputPin": 1,
+        "outputPin": 0,
+        "inputLevel": 1,
+        "activated": true
+      },
+      {
+        "inputPin": 3,
+        "outputPin": 2,
+        "inputLevel": 0,
+        "activated": false
+      },
+      {
+        "inputPin": 5,
+        "outputPin": 6,
+        "inputLevel": 0,
+        "activated": true
+      },
+      {
+        "inputPin": 7,
+        "outputPin": 8,
+        "inputLevel": 0,
+        "activated": false
+      }
+    ],
+    "active": true
+  }
+]

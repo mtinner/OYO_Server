@@ -1,6 +1,9 @@
 'use strict';
 
-let EndpointService = require('../service/EndpointService');
+let EndpointService = require('../service/EndpointService'),
+    constants = require('../common/constants'),
+    Endpoint = require('../entity/Endpoint'),
+    IO = require('../entity/IO');
 
 
 class EndpointManager {
@@ -18,13 +21,15 @@ class EndpointManager {
     }
 
     add(obj) {
-        return this.get(obj.chipId)
+        let endpoint = new Endpoint(obj.chipId, obj.ip);
+        obj.ios.forEach(io => endpoint.addIO(new IO(io.inputPin, io.outputPin)));
+        return this.get(endpoint.chipId)
             .then((doc) => {
                 if (doc) {
-                    return this.update({chipId: obj.chipId, ip: obj.ip})
+                    return this.update({chipId: endpoint.chipId, ip: endpoint.ip})
                 }
                 else {
-                    return this.endpointService.add(obj);
+                    return this.endpointService.add(endpoint);
                 }
             });
     }
@@ -33,14 +38,18 @@ class EndpointManager {
         return this.endpointService.update({chipId: obj.chipId}, obj);
     }
 
-    addInput(obj) {
+    updateIOs(obj) {
         return this.get(obj.chipId)
             .then(endpoint => {
                 if (endpoint) {
-                    let index = endpoint.inputPins.findIndex((pin) => pin === obj.pin);
-                    if (!endpoint.activeIoIndex.includes(index)) {
-                        endpoint.activeIoIndex.push(index);
-                    }
+                    obj.ios.forEach(initialIO => {
+                        let io = endpoint.ios.find(storeIO => storeIO.inputPin === initialIO.inputPin);
+                        if (initialIO.inputLevel === constants.LEVEL.UP) {
+                            console.log('activated: ', io);
+                            io.activated = true;
+                        }
+                        io.inputLevel = initialIO.inputLevel;
+                    });
                     return this.update(endpoint);
                 }
                 return Promise.reject('no such endpoint');

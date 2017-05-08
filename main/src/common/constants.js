@@ -7,5 +7,6 @@ module.exports = {
     EVENTS: {
         INITIAL: 'INITIAL',
         CHANGE: 'CHANGE'
-    }
+    },
+    LEVEL: {UP: 1, DOWN: 0}
 };

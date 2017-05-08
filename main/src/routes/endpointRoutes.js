@@ -3,7 +3,6 @@
 let express = require('express'),
     router = express.Router(),
     EndpointManager = require('../manager/EndpointManager'),
-    Endpoint = require('../entity/Endpoint'),
     endpointManager = new EndpointManager();
 
 router.get('/',
@@ -18,7 +17,7 @@ router.post('/',
     function (req, res) {
         let chip = req.body;
 
-        endpointManager.add(new Endpoint(chip.chipId, req.connection.remoteAddress, chip.inputPins, chip.outputPins))
+        endpointManager.add(Object.assign(chip, {ip: req.connection.remoteAddress}))
             .then(() => res.status(204).send())
             .catch((err) => res.status(err.status || 400).send(err));
     });

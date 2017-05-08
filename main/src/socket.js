@@ -19,14 +19,12 @@ module.exports = (function () {
             ws.on('message', function incoming(message) {
                 console.log('Received Message: ' + message);
                 let messageObj = JSON.parse(message);
-                if (message.event === constants.EVENTS.CHANGE) {
-                    let inputChange = Object.assign({}, messageObj, {chipId: getChipId(ws)});
-                    endpointManager.addInput(inputChange);
-                    eventBus.emit(constants.INPUT_CHANGE, inputChange);
+                if (messageObj.event === constants.EVENTS.CHANGE) {
+                    endpointManager.updateIOs({ios: [messageObj],chipId: getChipId(ws)});
+                    eventBus.emit(constants.INPUT_CHANGE, Object.assign({}, messageObj, {chipId: getChipId(ws)}));
                 }
-                else if (message.event === constants.EVENTS.INITIAL) {
-                    console.log(message);
-                    //TODO save locally
+                else if (messageObj.event === constants.EVENTS.INITIAL) {
+                    endpointManager.updateIOs(Object.assign({}, messageObj, {chipId: getChipId(ws)}))
                 }
             });
 

@@ -2,13 +2,17 @@
 
 class Endpoint {
 
-    constructor(chipId, ip, inputPins, outputPins) {
+    constructor(chipId, ip) {
         this.chipId = chipId;
         this.ip = ip;
-        this.activeIoIndex = [];
-        this.inputPins = inputPins;
-        this.outputPins = outputPins;
+        this.ios = [];
         this.active = true;
+    }
+
+    addIO(io) {
+        if (!this.ios.some(ioEntry => ioEntry.inputPin === io.inputPin)) {
+            this.ios.push(io);
+        }
     }
 }
 
