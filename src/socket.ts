@@ -10,7 +10,7 @@ export class Socket {
     private endpointManager: EndpointManager;
 
     constructor() {
-        this.eventBus = new EventBus();
+        this.eventBus = EventBus.getInstance();
         this.endpointManager = new EndpointManager(new EndpointService());
     }
 

@@ -15,7 +15,7 @@ export class Server {
     private apiRoutes;
 
     constructor() {
-        this.eventBus = new EventBus();
+        this.eventBus = EventBus.getInstance();
         this.apiRoutes = new ApiRoutes();
     }
 
