@@ -1,6 +1,7 @@
-var MongoClient = require('mongodb').MongoClient;
+import {MongoClient} from 'mongodb';
 
-class Repository {
+export class Repository {
+    private collection = null;
 
     constructor(documentName) {
         // TODO open close wrapper --> not in constructor
@@ -30,7 +31,6 @@ class Repository {
     }
 
     removeId(doc) {
-        let cleanedItem = null;
         if (Array.isArray(doc)) {
             doc.forEach(item => delete item._id)
         }
@@ -40,5 +40,3 @@ class Repository {
         return Promise.resolve(doc);
     }
 }
-
-module.exports = Repository;

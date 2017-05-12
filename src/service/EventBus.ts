@@ -1,7 +1,8 @@
-class EventBus {
+export class EventBus {
+    private subscribers = {};
 
     constructor() {
-        this.subscribers = {};
+
     }
 
     observe(name, callback) {
@@ -17,5 +18,3 @@ class EventBus {
         }
     }
 }
-
-module.exports = new EventBus();

@@ -1,15 +1,14 @@
-'use strict';
 
-let EndpointService = require('../service/EndpointService'),
-    constants = require('../common/constants'),
-    Endpoint = require('../entity/Endpoint'),
-    IO = require('../entity/IO');
+import {CONSTANTS} from '../common/constants';
+import {EndpointService} from '../service/EndpointService';
+import {Endpoint} from '../entity/Endpoint';
+import {IO} from '../entity/IO';
 
 
-class EndpointManager {
 
-    constructor() {
-        this.endpointService = new EndpointService()
+export class EndpointManager {
+
+    constructor(private endpointService:EndpointService) {
     }
 
     get(chipId) {
@@ -44,7 +43,7 @@ class EndpointManager {
                 if (endpoint) {
                     obj.ios.forEach(initialIO => {
                         let io = endpoint.ios.find(storeIO => storeIO.inputPin === initialIO.inputPin);
-                        if (initialIO.inputLevel === constants.LEVEL.UP) {
+                        if (initialIO.inputLevel === CONSTANTS.LEVEL.UP) {
                             console.log('activated: ', io);
                             io.activated = true;
                         }
@@ -55,6 +54,5 @@ class EndpointManager {
                 return Promise.reject('no such endpoint');
             });
     }
-}
 
-module.exports = EndpointManager;
+}

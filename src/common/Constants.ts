@@ -1,4 +1,4 @@
-module.exports = {
+export const CONSTANTS = {
     SERVER_PORT: 8610,
     SOCKET_ENDPOINT_PORT: 1990,
     BROADCAST_PORT: 1990,
@@ -9,4 +9,6 @@ module.exports = {
         CHANGE: 'CHANGE'
     },
     LEVEL: {UP: 1, DOWN: 0}
+
+
 };

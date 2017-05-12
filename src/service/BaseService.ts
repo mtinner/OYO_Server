@@ -1,16 +1,16 @@
-'use strict';
+import {Repository} from '../db/Repository';
 
 
-class BaseService {
-    constructor(repository) {
-        this.repository = repository;
+export class BaseService {
+
+    constructor(private repository: Repository) {
     }
 
     get(document) {
         return this.repository.get(document);
     }
 
-    getAll(document) {
+    getAll(document = {}) {
         return this.repository.getAll(document);
     }
 
@@ -22,5 +22,3 @@ class BaseService {
         return this.repository.update(filter, {$set: document});
     }
 }
-
-module.exports = BaseService;
