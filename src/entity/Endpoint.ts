@@ -2,12 +2,16 @@
 import {IO} from './IO';
 
 export class Endpoint {
-    private ios = new Array<IO>();
-    // private active = true;
+    public ios = new Array<IO>();
+    public active;
 
     constructor(public chipId: number, public  ip: string) {
         this.chipId = chipId;
         this.ip = ip;
+    }
+
+    setActive(bool: boolean) {
+        this.active = bool;
     }
 
     addIO(io) {
@@ -16,4 +20,5 @@ export class Endpoint {
         }
     }
 }
+
 

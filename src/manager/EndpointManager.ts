@@ -1,18 +1,16 @@
-
 import {CONSTANTS} from '../common/constants';
 import {EndpointService} from '../service/EndpointService';
 import {Endpoint} from '../entity/Endpoint';
 import {IO} from '../entity/IO';
 
 
-
 export class EndpointManager {
 
-    constructor(private endpointService:EndpointService) {
+    constructor(private endpointService: EndpointService) {
     }
 
     get(chipId) {
-        return this.endpointService.get({chipId: chipId})
+        return this.endpointService.get({chipId: chipId});
     }
 
     getAll() {
@@ -53,6 +51,18 @@ export class EndpointManager {
                 }
                 return Promise.reject('no such endpoint');
             });
+    }
+
+    setAllInactive() {
+        this.getAll()
+            .then(endpoints => {
+                let promises = [];
+                endpoints.forEach((endpoint: Endpoint) => {
+                    endpoint.active = false;
+                    promises.push(this.update(endpoint));
+                });
+                return Promise.all(promises);
+            })
     }
 
 }

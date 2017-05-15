@@ -15,6 +15,7 @@ export class Socket {
     }
 
     start() {
+        this.endpointManager.setAllInactive();
         const wss = new WebSocket.Server({port: CONSTANTS.SOCKET_ENDPOINT_PORT});
         wss.on('connection', (ws: OYOWebSocket) => {
             ws._socket.setKeepAlive(true);
