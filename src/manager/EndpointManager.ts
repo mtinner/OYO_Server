@@ -2,9 +2,12 @@ import {CONSTANTS} from '../common/constants';
 import {EndpointService} from '../service/EndpointService';
 import {Endpoint} from '../entity/Endpoint';
 import {IO} from '../entity/IO';
+import {IOutput} from '../entity/IOutput';
+import {EndpointRequester} from '../EndpointRequester';
 
 
 export class EndpointManager {
+    private endpointRequester = new EndpointRequester();
 
     constructor(private endpointService: EndpointService) {
     }
@@ -33,6 +36,16 @@ export class EndpointManager {
 
     update(obj) {
         return this.endpointService.update({chipId: obj.chipId}, obj);
+    }
+
+    changeEndpoint(obj: IOutput): Promise<any> {
+        return this.get(obj.chipId)
+            .then((endpoint: Endpoint) => {
+                if (!endpoint) {
+                    return Promise.reject('endpoint not found');
+                }
+                return this.endpointRequester.post(`http://${endpoint.ip}/output`, obj);
+            });
     }
 
     updateIOs(obj) {

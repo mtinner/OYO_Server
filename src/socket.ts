@@ -49,7 +49,7 @@ export class Socket {
 declare class OYOWebSocket extends WebSocket {
     _socket: OYOSocket;
 
-    remoteAddress(): string;
+    remoteAddress: string;
 
     on(name: string, cb?)
 }
