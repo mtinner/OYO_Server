@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "webpack",
+    "publish": "webpack",
     "start": "node dist/bundle.js"
   },
   "repository": {
@@ -33,6 +33,7 @@
     "@types/ws": "0.0.41",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
+    "clean-webpack-plugin": "^0.1.16",
     "ts-loader": "^2.0.3",
     "typescript": "^2.3.2",
     "webpack": "^2.5.1"

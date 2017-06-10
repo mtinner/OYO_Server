@@ -20,7 +20,11 @@ export class Server {
     }
 
     start() {
-
+        this.app.use(function(req, res, next) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+        });
         this.app.use(bodyParser.urlencoded({extended: false}));
         this.app.use(bodyParser.json());
 

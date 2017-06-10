@@ -35,7 +35,6 @@ export class Socket {
             });
 
             ws.on('close', () => {
-                console.log((new Date()) + ' Peer ' + ws.remoteAddress + ' close ws.');
                 this.endpointManager.update({chipId: this.getChipId(ws), active: false});
             });
         });

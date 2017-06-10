@@ -10,10 +10,6 @@ export class Endpoint {
         this.ip = ip;
     }
 
-    setActive(bool: boolean) {
-        this.active = bool;
-    }
-
     addIO(io) {
         if (!this.ios.some((ioEntry: IO) => ioEntry.inputPin === io.inputPin)) {
             this.ios.push(io);
