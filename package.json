@@ -1,8 +1,8 @@
 {
-  "name": "udp",
+  "name": "OYO_Server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "./dist/oyo_server.bundle.js",
   "scripts": {
     "publish": "webpack",
     "start": "node dist/bundle.js"
@@ -37,5 +37,12 @@
     "ts-loader": "^2.0.3",
     "typescript": "^2.3.2",
     "webpack": "^2.5.1"
-  }
+  },
+  "apps": [
+    {
+      "script": "./dist/oyo_server.bundle.js",
+      "watch": "true",
+      "name": "OYO_Server"
+    }
+  ]
 }
