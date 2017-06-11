@@ -1,4 +1,4 @@
-import {CONSTANTS} from "./common/constants";
+import {constants} from "./common/constants";
 import {EventBus} from './service/EventBus';
 import WebSocket from 'ws';
 import {EndpointManager} from './manager/EndpointManager';
@@ -16,7 +16,7 @@ export class Socket {
 
     start() {
         this.endpointManager.setAllInactive();
-        const wss = new WebSocket.Server({port: CONSTANTS.SOCKET_ENDPOINT_PORT});
+        const wss = new WebSocket.Server({port: constants.SOCKET_ENDPOINT_PORT});
         wss.on('connection', (ws: OYOWebSocket) => {
             ws._socket.setKeepAlive(true);
             console.log((new Date()) + ' Connection accepted.');
@@ -25,11 +25,11 @@ export class Socket {
             ws.on('message', (message) => {
                 console.log('Received Message: ' + message);
                 let messageObj = JSON.parse(message);
-                if (messageObj.event === CONSTANTS.EVENTS.CHANGE) {
+                if (messageObj.event === constants.EVENTS.CHANGE) {
                     this.endpointManager.updateIOs({ios: [messageObj], chipId: this.getChipId(ws)});
-                    this.eventBus.emit(CONSTANTS.INPUT_CHANGE, Object.assign({}, messageObj, {chipId: this.getChipId(ws)}));
+                    this.eventBus.emit(constants.INPUT_CHANGE, Object.assign({}, messageObj, {chipId: this.getChipId(ws)}));
                 }
-                else if (messageObj.event === CONSTANTS.EVENTS.INITIAL) {
+                else if (messageObj.event === constants.EVENTS.INITIAL) {
                     this.endpointManager.updateIOs(Object.assign({}, messageObj, {chipId: this.getChipId(ws)}))
                 }
             });

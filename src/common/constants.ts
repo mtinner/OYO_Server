@@ -1,4 +1,4 @@
-const CONSTANTS = {
+ export const constants = {
 	SERVER_PORT: 8610,
 	SOCKET_ENDPOINT_PORT: 1990,
 	BROADCAST_PORT: 1990,
@@ -10,5 +10,3 @@ const CONSTANTS = {
 	},
 	LEVEL: {UP: 1, DOWN: 0}
 };
-
-export {CONSTANTS};

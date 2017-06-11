@@ -1,9 +1,9 @@
-import {CONSTANTS} from '../common/constants';
 import {EndpointService} from '../service/EndpointService';
 import {Endpoint} from '../entity/Endpoint';
 import {IO} from '../entity/IO';
 import {IOutput} from '../entity/IOutput';
 import {EndpointRequester} from '../EndpointRequester';
+import {constants} from '../common/constants';
 
 
 export class EndpointManager {
@@ -54,7 +54,7 @@ export class EndpointManager {
                 if (endpoint) {
                     obj.ios.forEach(initialIO => {
                         let io = endpoint.ios.find(storeIO => storeIO.inputPin === initialIO.inputPin);
-                        if (initialIO.inputLevel === CONSTANTS.LEVEL.UP) {
+                        if (initialIO.inputLevel === constants.LEVEL.UP) {
                             console.log('activated: ', io);
                             io.activated = true;
                         }

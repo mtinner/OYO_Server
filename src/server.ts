@@ -4,9 +4,9 @@ import * as express from "express";
 
 import WebSocket  from 'ws';
 import http from 'http';
-import {CONSTANTS} from './common/Constants';
 import {EventBus} from './service/EventBus';
 import {ApiRoutes} from './routes/ApiRoutes';
+import {constants} from './common/constants';
 
 
 export class Server {
@@ -40,12 +40,12 @@ export class Server {
                 console.log('received: %s', message);
             });
 
-            this.eventBus.observe(CONSTANTS.INPUT_CHANGE, (data) => ws.send(JSON.stringify(data)));
+            this.eventBus.observe(constants.INPUT_CHANGE, (data) => ws.send(JSON.stringify(data)));
 
         });
 
 
-        let port = CONSTANTS.SERVER_PORT;
+        let port = constants.SERVER_PORT;
         server.listen(port);
         console.log('API listening on port ' + port + ' ...');
     }
