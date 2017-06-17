@@ -5,7 +5,8 @@
   "main": "./dist/oyo_server.bundle.js",
   "scripts": {
     "publish": "webpack",
-    "start": "node dist/bundle.js"
+    "start": "webpack",
+    "poststart": " node ./dist/oyo_server.bundle.js"
   },
   "repository": {
     "type": "git",

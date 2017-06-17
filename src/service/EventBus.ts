@@ -22,7 +22,6 @@ export class EventBus {
 
     emit(name, data) {
         if (this.subscribers[name]) {
-            console.log(this.subscribers[name]);
             this.subscribers[name].forEach(foo => foo(data));
         }
     }
