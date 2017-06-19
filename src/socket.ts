@@ -1,8 +1,9 @@
-import { constants } from "./common/constants";
-import { EventBus } from './service/EventBus';
+import {constants} from "./common/constants";
+import {EventBus} from './service/EventBus';
 import WebSocket from 'ws';
-import { EndpointManager } from './manager/EndpointManager';
-import { EndpointService } from './service/EndpointService';
+import {EndpointManager} from './manager/EndpointManager';
+import {EndpointService} from './service/EndpointService';
+import {getIOId, IO} from './entity/IO';
 
 
 export class Socket {
@@ -14,34 +15,38 @@ export class Socket {
 		this.endpointManager = new EndpointManager(new EndpointService());
 	}
 
-	start():void {
+	start(): void {
 		this.endpointManager.setAllInactive();
-		const wss = new WebSocket.Server({ port: constants.SOCKET_ENDPOINT_PORT });
+		const wss = new WebSocket.Server({port: constants.SOCKET_ENDPOINT_PORT});
 		wss.on('connection', (ws: OYOWebSocket) => {
 			ws._socket.setKeepAlive(true);
 			console.log((new Date()) + ' Connection accepted.');
-			this.endpointManager.update({ chipId: this.getChipId(ws), active: true });
+			this.endpointManager.update({chipId: this.getChipId(ws), active: true});
 
 			ws.on('message', (message) => {
 				console.log('Received Message: ' + message);
 				let messageObj = JSON.parse(message);
 				if (messageObj.event === constants.EVENTS.CHANGE) {
-					//new Object --> {event:'CHANGE',inputPin:number, inputLevel: 0 | 1 }
-					this.endpointManager.update({ ios: [messageObj], chipId: this.getChipId(ws) });
-					this.eventBus.emit(constants.INPUT_CHANGE, Object.assign({}, messageObj, { chipId: this.getChipId(ws) }));
+					const changeObject = {
+						inputLevel: messageObj.inputLevel,
+						chipId: this.getChipId(ws),
+						id: getIOId(this.getChipId(ws), messageObj.inputPin)
+					};
+					this.endpointManager.update(changeObject)
+						.then((io: IO) => this.eventBus.emit(constants.INPUT_CHANGE, io));
 				}
 				else if (messageObj.event === constants.EVENTS.INITIAL) {
-					this.endpointManager.setStatus({ chipId: this.getChipId(ws) }, constants.LEVEL.UP);
+					this.endpointManager.setStatus({chipId: this.getChipId(ws)}, constants.LEVEL.UP, messageObj.ios);
 				}
 			});
 
 			ws.on('close', () => {
-				this.endpointManager.setStatus({ chipId: this.getChipId(ws) }, constants.LEVEL.DOWN);
+				this.endpointManager.setStatus({chipId: this.getChipId(ws)}, constants.LEVEL.DOWN);
 			});
 		});
 	}
 
-	getChipId(websocket):number {
+	getChipId(websocket): number {
 		return parseInt(websocket.upgradeReq.headers['chip-id'])
 	}
 }
