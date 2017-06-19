@@ -1,11 +1,7 @@
-export class Endpoint {
-	public ios = new Array<{ outputPin: number, inputPin: number }>();
-	public active;
-
-	constructor(public chipId: number, public  ip: string) {
-		this.chipId = chipId;
-		this.ip = ip;
-	}
+export interface Endpoint {
+	ios: { outputPin: number, inputPin: number }[];
+	chipId: number;
+	ip: string;
 }
 
 
