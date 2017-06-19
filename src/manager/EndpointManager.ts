@@ -10,18 +10,18 @@ export class EndpointManager {
 	constructor(private endpointService: EndpointService) {
 	}
 
-	get(id) {
+	get(id): Promise<IO> {
 		return this.endpointService.get({ id: id });
 	}
 
-	getAll(filter = {}) {
+	getAll(filter = {}): Promise<IO[]> {
 		return this.endpointService.getAll(filter);
 	}
 
-	add(endpoint: Endpoint) {
+	add(endpoint: Endpoint): Promise<any> {
 		let promises = new Array<Promise<any>>();
 		endpoint.ios.forEach((io: IO) => {
-			let id = `${endpoint.chipId}_${io.inputPin}`;
+			let id = getIOId(endpoint.chipId, io.inputPin);
 			let promise = this.get(id)
 				.then((doc) => {
 					if (doc) {
@@ -38,7 +38,7 @@ export class EndpointManager {
 		return Promise.all(promises);
 	}
 
-	update(io) {
+	update(io): Promise<IO> {
 		return this.endpointService.update({ id: io.id }, io);
 	}
 
@@ -53,7 +53,7 @@ export class EndpointManager {
 	 });
 	 }*/
 
-	setStatus(endpointFilter: { chipId?: number } = {}, status: 1 | 0) {
+	setStatus(endpointFilter: { chipId?: number } = {}, status: 1 | 0): Promise<any> {
 
 		return this.getAll(endpointFilter)
 			.then((ios: IO[]) => {
@@ -70,7 +70,7 @@ export class EndpointManager {
 			});
 	}
 
-	setAllInactive() {
+	setAllInactive(): Promise<any> {
 		return this.setStatus({}, constants.LEVEL.DOWN);
 	}
 }

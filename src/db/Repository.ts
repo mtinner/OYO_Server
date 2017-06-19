@@ -1,4 +1,4 @@
-import {FindAndModifyWriteOpResultObject, InsertOneWriteOpResult, MongoClient} from 'mongodb';
+import { FindAndModifyWriteOpResultObject, InsertOneWriteOpResult, MongoClient } from 'mongodb';
 
 export class Repository {
 	//private collection = null;
@@ -17,33 +17,33 @@ export class Repository {
 
 	}
 
-	add(document) {
+	add(document): Promise<any> {
 		return this.connectionPromise
 			.then(collection => collection.insertOne(document))
 			.then((result: InsertOneWriteOpResult) => result.ops[0])
 			.then(this.removeId);
 	}
 
-	update(filter, document, options = null) {
+	update(filter, document, options = null): Promise<any> {
 		return this.connectionPromise
 			.then(collection => collection.findOneAndUpdate(filter, document, options))
 			.then((result: FindAndModifyWriteOpResultObject) => result.value)
 			.then(this.removeId);
 	}
 
-	get(document) {
+	get(document): Promise<any> {
 		return this.connectionPromise
 			.then(collection => collection.findOne(document))
 			.then(this.removeId);
 	}
 
-	getAll(filter) {
+	getAll(filter): Promise<any> {
 		return this.connectionPromise
 			.then(collection => collection.find(filter).toArray())
 			.then(this.removeId);
 	}
 
-	removeId(doc) {
+	removeId(doc): Promise<any> {
 		if (Array.isArray(doc)) {
 			doc.forEach(item => delete item._id)
 		}

@@ -14,7 +14,7 @@ export class Socket {
 		this.endpointManager = new EndpointManager(new EndpointService());
 	}
 
-	start() {
+	start():void {
 		this.endpointManager.setAllInactive();
 		const wss = new WebSocket.Server({ port: constants.SOCKET_ENDPOINT_PORT });
 		wss.on('connection', (ws: OYOWebSocket) => {
@@ -41,7 +41,7 @@ export class Socket {
 		});
 	}
 
-	getChipId(websocket) {
+	getChipId(websocket):number {
 		return parseInt(websocket.upgradeReq.headers['chip-id'])
 	}
 }
