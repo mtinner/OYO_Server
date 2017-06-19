@@ -1,5 +1,4 @@
-import {createSocket} from "dgram";
-import {constants} from './common/constants';
+import { createSocket } from 'dgram';
 
 export class Broadcast {
 	private server;

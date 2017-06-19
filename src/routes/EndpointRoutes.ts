@@ -1,9 +1,9 @@
 import * as express from 'express';
-import {EndpointManager} from '../manager/EndpointManager';
-import {EndpointService} from '../service/EndpointService';
-import {RequestHandler, Router} from 'express-serve-static-core';
-import {IRoutes} from './IRoutes';
-import {Endpoint} from '../entity/Endpoint';
+import { EndpointManager } from '../manager/EndpointManager';
+import { EndpointService } from '../service/EndpointService';
+import { RequestHandler, Router } from 'express-serve-static-core';
+import { IRoutes } from './IRoutes';
+import { Endpoint } from '../entity/Endpoint';
 
 
 export class EndpointRoutes implements IRoutes {
@@ -19,7 +19,7 @@ export class EndpointRoutes implements IRoutes {
 		return [
 			this.router.get('/',
 				(req, res) => {
-					this.endpointManager.getAll()
+					this.endpointManager.getAll(req.query)
 						.then(endpoints => res.status(200).send(endpoints))
 						.catch((err) => res.status(err.status || 400).send(err));
 
@@ -28,7 +28,7 @@ export class EndpointRoutes implements IRoutes {
 				(req, res) => {
 					let chip = req.body;
 					let ipv4 = req.connection.remoteAddress.replace(/^.*:/, '');
-					this.endpointManager.add(Object.assign(chip, {ip: ipv4}))
+					this.endpointManager.add(Object.assign(chip, { ip: ipv4 }))
 						.then(() => res.status(204).send())
 						.catch((err) => res.status(err.status || 400).send(err));
 				}),
@@ -40,7 +40,7 @@ export class EndpointRoutes implements IRoutes {
 				}),
 			this.router.post('/:chipId',
 				(req, res) => {
-					let endpoint: Endpoint = {chipId: parseInt(req.params.id), ...req.body};
+					let endpoint: Endpoint = { chipId: parseInt(req.params.id), ...req.body };
 					this.endpointManager.update(endpoint)
 						.then((endpoint) => res.status(200).send(endpoint))
 						.catch((err) => res.status(err.status || 400).send(err));
