@@ -37,9 +37,9 @@ export class Repository {
 			.then(this.removeId);
 	}
 
-	getAll(document = {}) {
+	getAll(filter) {
 		return this.connectionPromise
-			.then(collection => collection.find(document).toArray())
+			.then(collection => collection.find(filter).toArray())
 			.then(this.removeId);
 	}
 

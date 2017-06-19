@@ -8,5 +8,5 @@
 		INITIAL: 'INITIAL',
 		CHANGE: 'CHANGE'
 	},
-	LEVEL: {UP: 1, DOWN: 0}
+	LEVEL: {UP: 1 as 1, DOWN: 0 as 0}
 };

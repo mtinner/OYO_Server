@@ -1,4 +1,4 @@
-import {Repository} from '../db/Repository';
+import { Repository } from '../db/Repository';
 
 
 export class BaseService<T> {
@@ -10,15 +10,15 @@ export class BaseService<T> {
 		return this.repository.get(document);
 	}
 
-	getAll(document = {}): Promise<T[] | null> {
-		return this.repository.getAll(document);
+	getAll(filter = {}): Promise<T[]> {
+		return this.repository.getAll(filter);
 	}
 
-	add(document): Promise<T | null> {
+	add(document: T): Promise<T | null> {
 		return this.repository.add(document);
 	}
 
 	update(filter, document): Promise<T | null> {
-		return this.repository.update(filter, {$set: document}, {returnOriginal: false});
+		return this.repository.update(filter, { $set: document }, { returnOriginal: false });
 	}
 }

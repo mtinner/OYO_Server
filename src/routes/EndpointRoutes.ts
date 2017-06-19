@@ -34,13 +34,13 @@ export class EndpointRoutes implements IRoutes {
 				}),
 			this.router.get('/:chipId',
 				(req, res) => {
-					this.endpointManager.get(parseInt(req.params.chipId))
+					this.endpointManager.get(parseInt(req.params.id))
 						.then((endpoint) => res.status(200).send(endpoint))
 						.catch((err) => res.status(err.status || 400).send(err));
 				}),
 			this.router.post('/:chipId',
 				(req, res) => {
-					let endpoint: Endpoint = {chipId: parseInt(req.params.chipId), ...req.body};
+					let endpoint: Endpoint = {chipId: parseInt(req.params.id), ...req.body};
 					this.endpointManager.update(endpoint)
 						.then((endpoint) => res.status(200).send(endpoint))
 						.catch((err) => res.status(err.status || 400).send(err));
