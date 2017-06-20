@@ -1,12 +1,16 @@
-import {constants} from '../common/constants';
-export class IO {
-	public title: string;
-	public toggleOutput: boolean;
+export interface IO {
+	id: string;
+	chipId: number;
+	ip: string;
+	title: string;
+	toggleOutput: boolean;
+	status: 0 | 1;
+	inputPin: number
+	outputPin: number;
+	inputLevel: 0 | 1;
+	activated: boolean;
+}
 
-	constructor(public inputPin, private outputPin, public inputLevel = constants.LEVEL.DOWN, public activated = false) {
-		this.inputPin = inputPin;
-		this.outputPin = outputPin;
-		this.inputLevel = inputLevel;
-		this.activated = activated;
-	}
+export function getIOId(chipId: number, inputPin: number) {
+	return `${chipId}_${inputPin}`;
 }

@@ -1,12 +1,12 @@
 'use strict';
-import bodyParser from 'body-parser'
+import bodyParser from 'body-parser';
 import * as express from "express";
 
 import WebSocket  from 'ws';
 import http from 'http';
-import {EventBus} from './service/EventBus';
-import {ApiRoutes} from './routes/ApiRoutes';
-import {constants} from './common/constants';
+import { EventBus } from './service/EventBus';
+import { ApiRoutes } from './routes/ApiRoutes';
+import { constants } from './common/constants';
 
 
 export class Server {
@@ -19,20 +19,20 @@ export class Server {
 		this.apiRoutes = new ApiRoutes();
 	}
 
-	start() {
+	start(): void {
 		this.app.use(function (req, res, next) {
 			res.header("Access-Control-Allow-Origin", "*");
 			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 			next();
 		});
-		this.app.use(bodyParser.urlencoded({extended: false}));
+		this.app.use(bodyParser.urlencoded({ extended: false }));
 		this.app.use(bodyParser.json());
 
 		this.app.use('/api', this.apiRoutes.getRoutes());
 
 
 		const server = http.createServer(this.app);
-		const wss = new WebSocket.Server({server});
+		const wss = new WebSocket.Server({ server });
 
 		wss.on('connection', (ws) => {
 			console.log('new Connection on Server');

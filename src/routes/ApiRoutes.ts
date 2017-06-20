@@ -3,6 +3,7 @@ import {RequestHandler} from 'express-serve-static-core';
 import {EndpointRoutes} from './EndpointRoutes';
 import {Router} from 'express';
 import {IRoutes} from './IRoutes';
+import { intQueryParser, nocache } from '../common/middleware';
 
 
 export class ApiRoutes implements IRoutes {
@@ -16,15 +17,9 @@ export class ApiRoutes implements IRoutes {
 
 	getRoutes(): RequestHandler[] {
 		return [
-			this.router.use(this.nocache),
+			this.router.use(nocache),
+			this.router.use(intQueryParser),
 			this.router.use('/endpoints', this.endpointRoutes.getRoutes())
 		]
-	}
-
-	nocache(req, res, next) {
-		res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-		res.header('Expires', '-1');
-		res.header('Pragma', 'no-cache');
-		next();
 	}
 }

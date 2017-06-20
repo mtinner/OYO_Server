@@ -1,9 +1,8 @@
-import {EndpointService} from '../service/EndpointService';
-import {Endpoint} from '../entity/Endpoint';
-import {IO} from '../entity/IO';
-import {IOutput} from '../entity/IOutput';
-import {EndpointRequester} from '../EndpointRequester';
-import {constants} from '../common/constants';
+import { EndpointService } from '../service/EndpointService';
+import { Endpoint } from '../entity/Endpoint';
+import { getIOId, IO } from '../entity/IO';
+import { constants } from '../common/constants';
+import { EndpointRequester } from '../EndpointRequester';
 
 
 export class EndpointManager {
@@ -12,69 +11,71 @@ export class EndpointManager {
 	constructor(private endpointService: EndpointService) {
 	}
 
-	get(chipId) {
-		return this.endpointService.get({chipId: chipId});
+	get(id: string): Promise<IO> {
+		return this.endpointService.get({ id: id });
 	}
 
-	getAll() {
-		return this.endpointService.getAll();
+	getAll(filter = {}): Promise<IO[]> {
+		return this.endpointService.getAll(filter);
 	}
 
-	add(obj) {
-		let endpoint = new Endpoint(obj.chipId, obj.ip);
-		obj.ios.forEach(io => endpoint.addIO(new IO(io.inputPin, io.outputPin)));
-		return this.get(endpoint.chipId)
-			.then((doc) => {
-				if (doc) {
-					return this.update({chipId: endpoint.chipId, ip: endpoint.ip})
-				}
-				else {
-					return this.endpointService.add(endpoint);
-				}
-			});
-	}
-
-	update(obj) {
-		return this.endpointService.update({chipId: obj.chipId}, obj);
-	}
-
-	changeEndpoint(obj: IOutput): Promise<any> {
-		return this.get(obj.chipId)
-			.then((endpoint: Endpoint) => {
-				if (!endpoint) {
-					return Promise.reject('endpoint not found');
-				}
-				return this.endpointRequester.post(`http://${endpoint.ip}/output`, obj);
-			});
-	}
-
-	updateIOs(obj) {
-		return this.get(obj.chipId)
-			.then(endpoint => {
-				if (endpoint) {
-					obj.ios.forEach(initialIO => {
-						let io = endpoint.ios.find(storeIO => storeIO.inputPin === initialIO.inputPin);
-						if (initialIO.inputLevel === constants.LEVEL.UP) {
-							io.activated = true;
-						}
-						io.inputLevel = initialIO.inputLevel;
-					});
-					return this.update(endpoint);
-				}
-				return Promise.reject('no such endpoint');
-			});
-	}
-
-	setAllInactive() {
-		this.getAll()
-			.then(endpoints => {
-				let promises = [];
-				endpoints.forEach((endpoint: Endpoint) => {
-					endpoint.active = false;
-					promises.push(this.update(endpoint));
+	add(endpoint: Endpoint): Promise<any> {
+		let promises = new Array<Promise<any>>();
+		endpoint.ios.forEach((io: IO) => {
+			let id = getIOId(endpoint.chipId, io.inputPin);
+			let promise = this.get(id)
+				.then((doc) => {
+					if (doc) {
+						return this.update({ id: id, ip: endpoint.ip })
+					}
+					else {
+						io.chipId = endpoint.chipId;
+						io.id = id;
+						return this.endpointService.add({ ...io, ip: endpoint.ip });
+					}
 				});
-				return Promise.all(promises);
-			})
+			promises.push(promise);
+		});
+		return Promise.all(promises);
 	}
 
+	update(io): Promise<IO> {
+		return this.endpointService.update({ id: io.id }, io);
+	}
+
+	switchOutput(id: string): Promise<any> {
+		return this.get(id)
+			.then((io: IO) => {
+				if (!io) {
+					return Promise.reject('io not found');
+				}
+				let newValue = io.inputLevel === constants.LEVEL.DOWN ? constants.LEVEL.UP : constants.LEVEL.DOWN;
+				return this.endpointRequester.post(`http://${io.ip}/output`, { ...io, value: newValue });
+			});
+	}
+
+	setStatus(endpointFilter: { chipId?: number } = {}, status: 1 | 0, remoteIOS?: { outputPin: number, inputPin: number }[]): Promise<any> {
+
+		return this.getAll(endpointFilter)
+			.then((ios: IO[]) => {
+				if (ios.length) {
+					let promises = Array<Promise<IO>>();
+					ios.forEach(io => {
+						if (remoteIOS) {
+							let remoteIO = remoteIOS.find(_ => _.inputPin === io.inputPin);
+							io = { ...remoteIO, ...io };
+						}
+						io.status = status;
+						io.id = getIOId(io.chipId || endpointFilter.chipId, io.inputPin);
+						promises.push(this.update(io));
+					});
+					return Promise.all(promises);
+				}
+				return Promise.resolve([]);
+			});
+	}
+
+	setAllInactive(): Promise<any> {
+		return this.setStatus({}, constants.LEVEL.DOWN);
+	}
 }

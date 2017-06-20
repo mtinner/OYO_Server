@@ -17,7 +17,8 @@
     "jsx": "preserve",
     "noUnusedLocals": true,
     "strictNullChecks": false,
-    "removeComments": false
+    "removeComments": false,
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*"
