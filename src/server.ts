@@ -13,6 +13,7 @@ export class Server {
 	private eventBus: EventBus;
 	private app = express();
 	private apiRoutes;
+	private wss;
 
 	constructor() {
 		this.eventBus = EventBus.getInstance();
@@ -32,22 +33,27 @@ export class Server {
 
 
 		const server = http.createServer(this.app);
-		const wss = new WebSocket.Server({ server });
+		this.wss = new WebSocket.Server({ server });
 
-		wss.on('connection', (ws) => {
+		this.wss.on('connection', (ws) => {
 			console.log('new Connection on Server');
 			ws.on('message', function incoming(message) {
 				console.log('received: %s', message);
 			});
-
-			this.eventBus.observe(constants.INPUT_CHANGE, (data) => ws.send(JSON.stringify(data)));
-
 		});
-
+		
+		this.eventBus.observe(constants.INPUT_CHANGE, (data) => this.broadcast(data));
 
 		let port = constants.SERVER_PORT;
 		server.listen(port);
 		console.log('API listening on port ' + port + ' ...');
+	}
+
+	broadcast(message: object) {
+		if (!this.wss) {
+			throw 'Websocket Server not started'
+		}
+		this.wss.clients.forEach((client: WebSocket) => client.send(JSON.stringify(message)))
 	}
 }
 
