@@ -1,17 +1,18 @@
-import {EndpointService} from '../service/EndpointService';
-import {Endpoint} from '../entity/Endpoint';
-import {getIOId, IO} from '../entity/IO';
-import {constants} from '../common/constants';
+import { EndpointService } from '../service/EndpointService';
+import { Endpoint } from '../entity/Endpoint';
+import { getIOId, IO } from '../entity/IO';
+import { constants } from '../common/constants';
+import { EndpointRequester } from '../EndpointRequester';
 
 
 export class EndpointManager {
-	//private endpointRequester = new EndpointRequester();
+	private endpointRequester = new EndpointRequester();
 
 	constructor(private endpointService: EndpointService) {
 	}
 
-	get(id): Promise<IO> {
-		return this.endpointService.get({id: id});
+	get(id: string): Promise<IO> {
+		return this.endpointService.get({ id: id });
 	}
 
 	getAll(filter = {}): Promise<IO[]> {
@@ -25,12 +26,12 @@ export class EndpointManager {
 			let promise = this.get(id)
 				.then((doc) => {
 					if (doc) {
-						return this.update({id: id, ip: endpoint.ip})
+						return this.update({ id: id, ip: endpoint.ip })
 					}
 					else {
 						io.chipId = endpoint.chipId;
 						io.id = id;
-						return this.endpointService.add({...io, ip: endpoint.ip});
+						return this.endpointService.add({ ...io, ip: endpoint.ip });
 					}
 				});
 			promises.push(promise);
@@ -39,19 +40,19 @@ export class EndpointManager {
 	}
 
 	update(io): Promise<IO> {
-		return this.endpointService.update({id: io.id}, io);
+		return this.endpointService.update({ id: io.id }, io);
 	}
 
-	// TODO
-	/*	changeEndpoint(obj: IOutput): Promise<any> {
-	 return this.get(obj.chipId)
-	 .then((endpoint: Endpoint) => {
-	 if (!endpoint) {
-	 return Promise.reject('endpoint not found');
-	 }
-	 return this.endpointRequester.post(`http://${endpoint.ip}/output`, obj);
-	 });
-	 }*/
+	switchOutput(id: string): Promise<any> {
+		return this.get(id)
+			.then((io: IO) => {
+				if (!io) {
+					return Promise.reject('io not found');
+				}
+				let newValue = io.inputLevel === constants.LEVEL.DOWN ? constants.LEVEL.UP : constants.LEVEL.DOWN;
+				return this.endpointRequester.post(`http://${io.ip}/output`, { ...io, value: newValue });
+			});
+	}
 
 	setStatus(endpointFilter: { chipId?: number } = {}, status: 1 | 0, remoteIOS?: { outputPin: number, inputPin: number }[]): Promise<any> {
 
@@ -62,7 +63,7 @@ export class EndpointManager {
 					ios.forEach(io => {
 						if (remoteIOS) {
 							let remoteIO = remoteIOS.find(_ => _.inputPin === io.inputPin);
-							io = {...remoteIO, ...io};
+							io = { ...remoteIO, ...io };
 						}
 						io.status = status;
 						io.id = getIOId(io.chipId || endpointFilter.chipId, io.inputPin);

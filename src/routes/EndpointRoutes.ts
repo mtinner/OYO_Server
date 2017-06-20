@@ -3,7 +3,7 @@ import { EndpointManager } from '../manager/EndpointManager';
 import { EndpointService } from '../service/EndpointService';
 import { RequestHandler, Router } from 'express-serve-static-core';
 import { IRoutes } from './IRoutes';
-import { Endpoint } from '../entity/Endpoint';
+import { IO } from '../entity/IO';
 
 
 export class EndpointRoutes implements IRoutes {
@@ -32,17 +32,17 @@ export class EndpointRoutes implements IRoutes {
 						.then(() => res.status(204).send())
 						.catch((err) => res.status(err.status || 400).send(err));
 				}),
-			this.router.get('/:chipId',
+			this.router.put('/:id',
 				(req, res) => {
-					this.endpointManager.get(parseInt(req.params.id))
-						.then((endpoint) => res.status(200).send(endpoint))
+					let io: IO = { id: req.params.id, ...req.body };
+					this.endpointManager.update(io)
+						.then((updatedIO) => res.status(200).send(updatedIO))
 						.catch((err) => res.status(err.status || 400).send(err));
 				}),
-			this.router.post('/:chipId',
+			this.router.post('/:id/switch',
 				(req, res) => {
-					let endpoint: Endpoint = { chipId: parseInt(req.params.id), ...req.body };
-					this.endpointManager.update(endpoint)
-						.then((endpoint) => res.status(200).send(endpoint))
+					this.endpointManager.switchOutput(req.params.id)
+						.then(() => res.status(204).send())
 						.catch((err) => res.status(err.status || 400).send(err));
 				})
 		]
