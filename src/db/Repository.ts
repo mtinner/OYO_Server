@@ -5,7 +5,6 @@ export class Repository {
 	private connectionPromise;
 
 	constructor(documentName) {
-		// TODO open close wrapper --> not in constructor
 		this.connectionPromise = new Promise(function (resolve, reject) {
 			let url = 'mongodb://localhost:27017/oyo';
 			MongoClient.connect(url, (err, db) => {
