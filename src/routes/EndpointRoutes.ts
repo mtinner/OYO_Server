@@ -44,6 +44,12 @@ export class EndpointRoutes implements IRoutes {
 					this.endpointManager.switchOutput(req.params.id)
 						.then(() => res.status(204).send())
 						.catch((err) => res.status(err.status || 400).send(err));
+				}),
+			this.router.post('/off',
+				(req, res) => {
+					this.endpointManager.switchOff()
+						.then(() => res.status(204).send())
+						.catch((err) => res.status(err.status || 400).send(err));
 				})
 		]
 	}

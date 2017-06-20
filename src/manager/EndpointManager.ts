@@ -54,6 +54,15 @@ export class EndpointManager {
 			});
 	}
 
+	switchOff(filter = {}): Promise<any> {
+		return this.getAll(filter)
+			.then((ios: IO[]) => {
+				let promises = [];
+				ios.forEach(io => promises.push(this.switchOutput(io.id)));
+				return Promise.all(promises);
+			});
+	}
+
 	setStatus(endpointFilter: { chipId?: number } = {}, status: 1 | 0, remoteIOS?: { outputPin: number, inputPin: number }[]): Promise<any> {
 
 		return this.getAll(endpointFilter)
