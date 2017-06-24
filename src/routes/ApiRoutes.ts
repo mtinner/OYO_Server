@@ -3,7 +3,7 @@ import {RequestHandler} from 'express-serve-static-core';
 import {EndpointRoutes} from './EndpointRoutes';
 import {Router} from 'express';
 import {IRoutes} from './IRoutes';
-import { intQueryParser, nocache } from '../common/middleware';
+import {intQueryParser, nocache, boolQueryParser} from '../common/middleware';
 
 
 export class ApiRoutes implements IRoutes {
@@ -19,6 +19,7 @@ export class ApiRoutes implements IRoutes {
 		return [
 			this.router.use(nocache),
 			this.router.use(intQueryParser),
+			this.router.use(boolQueryParser),
 			this.router.use('/endpoints', this.endpointRoutes.getRoutes())
 		]
 	}
