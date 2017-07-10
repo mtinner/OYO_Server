@@ -4,9 +4,9 @@ import * as express from "express";
 
 import WebSocket  from 'ws';
 import http from 'http';
-import { EventBus } from './service/EventBus';
-import { ApiRoutes } from './routes/ApiRoutes';
-import { constants } from './common/constants';
+import {EventBus} from './service/EventBus';
+import {ApiRoutes} from './routes/ApiRoutes';
+import {constants} from './common/constants';
 
 
 export class Server {
@@ -26,14 +26,14 @@ export class Server {
 			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 			next();
 		});
-		this.app.use(bodyParser.urlencoded({ extended: false }));
+		this.app.use(bodyParser.urlencoded({extended: false}));
 		this.app.use(bodyParser.json());
 
 		this.app.use('/api', this.apiRoutes.getRoutes());
 
 
 		const server = http.createServer(this.app);
-		this.wss = new WebSocket.Server({ server });
+		this.wss = new WebSocket.Server({server, path: '/ws'});
 
 		this.wss.on('connection', (ws) => {
 			console.log('new Connection on Server');
@@ -41,7 +41,7 @@ export class Server {
 				console.log('received: %s', message);
 			});
 		});
-		
+
 		this.eventBus.observe(constants.INPUT_CHANGE, (data) => this.broadcast(data));
 
 		let port = constants.SERVER_PORT;

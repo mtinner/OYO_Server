@@ -30,7 +30,8 @@ export class Socket {
 					const changeObject = {
 						inputLevel: messageObj.inputLevel,
 						chipId: this.getChipId(ws),
-						id: getIOId(this.getChipId(ws), messageObj.inputPin)
+						id: getIOId(this.getChipId(ws), messageObj.inputPin),
+						activated: true
 					};
 					this.endpointManager.update(changeObject)
 						.then((io: IO) => this.eventBus.emit(constants.INPUT_CHANGE, io));
