@@ -8,6 +8,7 @@ export interface IO {
 	inputPin: number
 	outputPin: number;
 	inputLevel: 0 | 1;
+	outputLevel: 0 | 1;
 	activated: boolean;
 }
 

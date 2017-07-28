@@ -42,7 +42,7 @@ export class Server {
 			});
 		});
 
-		this.eventBus.observe(constants.INPUT_CHANGE, (data) => this.broadcast(data));
+		this.eventBus.observe(constants.OUTPUT_CHANGE, (data) => this.broadcast(data));
 
 		let port = constants.SERVER_PORT;
 		server.listen(port);

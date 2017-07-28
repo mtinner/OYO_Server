@@ -11,13 +11,13 @@ export class Broadcast {
 	start() {
 		this.server.bind(() => {
 			this.server.setBroadcast(true);
+			console.log('Broadcast started');
 			setInterval(broadcastNew, 5000);
 		});
 
 		let broadcastNew = () => {
 			var message = new Buffer("Hello OYO!");
 			this.server.send(message, 0, message.length, constants.BROADCAST_PORT, constants.BROADCAST_ADDRESS, function () {
-				console.log("Sent '" + message + "'");
 			});
 		}
 	}

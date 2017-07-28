@@ -24,20 +24,32 @@ export class Socket {
 			this.endpointManager.update({chipId: this.getChipId(ws), active: true});
 
 			ws.on('message', (message) => {
-				console.log('Received Message: ' + message);
 				let messageObj = JSON.parse(message);
-				if (messageObj.event === constants.EVENTS.CHANGE) {
+				if (messageObj.event === constants.EVENTS.INPUT_CHANGE) {
 					const changeObject = {
-						inputLevel: messageObj.inputLevel,
 						chipId: this.getChipId(ws),
 						id: getIOId(this.getChipId(ws), messageObj.inputPin),
 						activated: true
 					};
 					this.endpointManager.update(changeObject)
-						.then((io: IO) => this.eventBus.emit(constants.INPUT_CHANGE, io));
+						.then((io: IO) =>
+							this.endpointManager.switchOutput(io.id));
+				}
+				else if (messageObj.event === constants.EVENTS.OUTPUT_CHANGE) {
+					const changeObject = {
+						outputLevel: messageObj.outputLevel,
+						chipId: this.getChipId(ws),
+						id: getIOId(this.getChipId(ws), messageObj.inputPin)
+					};
+					this.endpointManager.update(changeObject)
+						.then(io =>
+							this.eventBus.emit(constants.OUTPUT_CHANGE, io)
+						)
 				}
 				else if (messageObj.event === constants.EVENTS.INITIAL) {
-					this.endpointManager.setStatus({chipId: this.getChipId(ws)}, constants.LEVEL.UP, messageObj.ios);
+					this.endpointManager.setStatus({chipId: this.getChipId(ws)}, constants.LEVEL.UP, messageObj.ios)
+						.then(_ => this.endpointManager.setBootupOutput(this.getChipId(ws)));
+
 				}
 			});
 
