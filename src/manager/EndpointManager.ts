@@ -77,9 +77,12 @@ export class EndpointManager {
 	switchOff(filter = {}): Promise<any> {
 		return this.getAll(filter)
 			.then((ios: IO[]) => {
-				let promises = [];
-				ios.forEach(io => promises.push(this.switchOutput(io.id)));
-				return Promise.all(promises);
+				const promises = ios.map(io => () => this.switchOutput(io.id));
+				promises.reduce(function (cur, next) {
+					return cur.then(next);
+				}, Promise.resolve()).then(function () {
+					return Promise.resolve(promises);
+				});
 			});
 	}
 

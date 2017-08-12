@@ -54,6 +54,7 @@ export class Socket {
 			});
 
 			ws.on('close', () => {
+				console.log('Connection closed', this.getChipId(ws));
 				this.endpointManager.setStatus({chipId: this.getChipId(ws)}, constants.LEVEL.DOWN);
 			});
 		});
